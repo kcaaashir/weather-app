@@ -1,7 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { Typography, Card, CardContent, Grid } from '@mui/material';
+import { Typography, Card, CardContent, Grid, CircularProgress } from '@mui/material';
 import { WiThermometer, WiHumidity, WiBarometer, WiStrongWind, WiDaySunny } from 'weather-icons-react';
 
 import HourlyForecast from './hourlyForecast';
@@ -80,7 +80,7 @@ const Weather = () => {
     return (
         <>
             <Typography mt={2} variant="h5" display="inline-flex" alignItems="center" mb={1} > <LocationOnIcon /> Location</Typography>
-            <Typography variant="h6" mb={8}> {weatherData?.name} </Typography>
+            <Typography variant="h6" mb={8} ml={2}> {weatherData?.name} </Typography>
             <Grid mb={10} ml={4} container alignItems={'center'} justifyContent="center" >
                 {weatherData ? (
                     <>
@@ -107,7 +107,7 @@ const Weather = () => {
                             <Card sx={{ backgroundColor: '#61dafb', width: 300, height: 330 }}>
                                 <CardContent>
                                     <Typography variant="h6" mb={2}>
-                                        Today Weather Info
+                                        Current Weather Info
                                     </Typography>
                                     <>
                                         <div style={cardLineStyle}>
@@ -147,7 +147,7 @@ const Weather = () => {
                         </Grid>
                     </>
                 ) : (
-                    <Typography variant="body1" mt={4}>Loading weather data...</Typography>
+                    <Typography  display={'inline-flex'} alignItems={'center'} mt={4}>Loading... <CircularProgress/></Typography>
                 )}
             </Grid>
             <HourlyForecast hourlyForecast={hourlyForecast} />
