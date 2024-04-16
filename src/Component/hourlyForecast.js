@@ -18,7 +18,7 @@ function HourlyForecast({ hourlyForecast }) {
             <Typography mb={5} variant="h6" display="inline-flex" alignItems="center"><ClockIcon sx={{ marginRight: '0.5rem' }} />Hourly Forecast</Typography>
             <Grid spacing={1}>
                 {hourlyForecast.length === 0 &&
-                    (<Typography variant="body1" display={'inline-flex'} alignItems={'center'} mt={4}>Loading... <CircularProgress /></Typography>
+                    (<Typography variant="body1" display={'inline-flex'} alignItems={'center'} mt={4} ml={4}>Loading... <CircularProgress /></Typography>
                     )}
                 <Slider   {...settings}>
                     {hourlyForecast.map((item, index) => (
