@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
-import { Typography, Card, CardContent} from '@mui/material';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { Typography, Card, CardContent, Grid } from '@mui/material';
 import { WiThermometer, WiHumidity, WiBarometer, WiStrongWind, WiDaySunny } from 'weather-icons-react';
 
 import HourlyForecast from './hourlyForecast';
@@ -33,10 +33,11 @@ const Weather = () => {
             })
             .then(data => {
                 const hourlyData = data.list.map(item => ({
-                    time: new Date(item.dt * 1000),
-                    temperature: item.main.temp,
-                    weather: item.weather[0].description,
                     icon: item.weather[0].icon,
+                    temperature: item.main.temp,
+                    time: new Date(item.dt * 1000),
+                    weather: item.weather[0].description,
+                    rain: item.rain ? item.rain['3h'] : 0,
                 }));
 
                 const next24HoursData = hourlyData.filter(item => item.time.getHours() < new Date().getHours() + 24);
@@ -78,62 +79,78 @@ const Weather = () => {
 
     return (
         <>
-            <Box sx={{ maxWidth: 400, margin: 'auto', mt: 4, mb: 5 }}>
-                <Typography mt={4} mb={5}>Your current location is {weatherData?.name}</Typography>
+            <Typography mt={2} variant="h5" display="inline-flex" alignItems="center" mb={1} > <LocationOnIcon /> Location</Typography>
+            <Typography variant="h6" mb={8}> {weatherData?.name} </Typography>
+            <Grid mb={10} ml={4} container alignItems={'center'} justifyContent="center" >
                 {weatherData ? (
                     <>
-                        <Card>
-                            <CardContent>
-                                <Typography variant="h5" component="h4" mb={5}>
-                                    Weather Information
-                                </Typography>
-                                <>
-                                    <div style={cardLineStyle}>
-                                        <WiThermometer size={40} style={iconStyle} />
-                                        <Typography variant="body1">
-                                            Temperature: {weatherData.main.temp}°C
-                                        </Typography>
-                                    </div>
-                                    <div style={cardLineStyle}>
-                                        <WiDaySunny size={40} style={iconStyle} />
-                                        <Typography variant="body1">
-                                            Description: {weatherData.weather[0].description}
-                                        </Typography>
-                                    </div>
-                                    <div style={cardLineStyle}>
-                                        <WiThermometer size={40} style={iconStyle} />
-                                        <Typography variant="body1">
-                                            Feels like: {weatherData.main.feels_like}°C
-                                        </Typography>
-                                    </div>
-                                    <div style={cardLineStyle}>
-                                        <WiHumidity size={40} style={iconStyle} />
-                                        <Typography variant="body1">
-                                            Humidity: {weatherData.main.humidity}%
-                                        </Typography>
-                                    </div>
-                                    <div style={cardLineStyle}>
-                                        <WiBarometer size={40} style={iconStyle} />
-                                        <Typography variant="body1">
-                                            Pressure: {weatherData.main.pressure}
-                                        </Typography>
-                                    </div>
-                                    <div style={cardLineStyle}>
-                                        <WiStrongWind size={40} style={iconStyle} />
-                                        <Typography variant="body1">
-                                            Wind Speed: {weatherData.wind.speed}m/s
-                                        </Typography>
-                                    </div>
+                        <Grid item xs={12} sm={6} md={4} >
+                            <Card sx={{ backgroundColor: '#61dafb', width: 300, height: 330 }}>
+                                <CardContent>
+                                    <Typography variant="h6" mb={1}>
+                                        {new Date().toLocaleString('en-us', { weekday: 'long' })}
+                                    </Typography>
+                                    <Typography variant="h6" mb={1}>
+                                        {new Date().toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })}
+                                    </Typography>
+                                    <Typography variant="h6">
+                                        {weatherData.weather[0].main}
+                                    </Typography>
+                                    <img width={150} height={150} src={`https://openweathermap.org/img/w/${weatherData.weather[0].icon}.png`} alt='Weather Icon' />
+                                    <Typography variant="h6">
+                                        {weatherData.main.temp}°C
+                                    </Typography>
+                                </CardContent>
+                            </Card>
+                        </Grid>
+                        <Grid item xs={12} sm={6} md={3}>
+                            <Card sx={{ backgroundColor: '#61dafb', width: 300, height: 330 }}>
+                                <CardContent>
+                                    <Typography variant="h6" mb={2}>
+                                        Today Weather Info
+                                    </Typography>
+                                    <>
+                                        <div style={cardLineStyle}>
+                                            <WiThermometer size={40} style={iconStyle} />
+                                            <Typography variant="body1">
+                                                Temperature: {weatherData.main.temp}°C
+                                            </Typography>
+                                        </div>
+                                        <div style={cardLineStyle}>
+                                            <WiDaySunny size={40} style={iconStyle} />
+                                            <Typography variant="body1">
+                                                Description: {weatherData.weather[0].description}
+                                            </Typography>
+                                        </div>
+                                        <div style={cardLineStyle}>
+                                            <WiHumidity size={40} style={iconStyle} />
+                                            <Typography variant="body1">
+                                                Humidity: {weatherData.main.humidity}%
+                                            </Typography>
+                                        </div>
+                                        <div style={cardLineStyle}>
+                                            <WiBarometer size={40} style={iconStyle} />
+                                            <Typography variant="body1">
+                                                Pressure: {weatherData.main.pressure}
+                                            </Typography>
+                                        </div>
+                                        <div style={cardLineStyle}>
+                                            <WiStrongWind size={40} style={iconStyle} />
+                                            <Typography variant="body1">
+                                                Wind Speed: {weatherData.wind.speed}m/s
+                                            </Typography>
+                                        </div>
 
-                                </>
-                            </CardContent>
-                        </Card>
+                                    </>
+                                </CardContent>
+                            </Card>
+                        </Grid>
                     </>
                 ) : (
                     <Typography variant="body1" mt={4}>Loading weather data...</Typography>
                 )}
-            </Box>
-            <HourlyForecast hourlyForecast={hourlyForecast}/>
+            </Grid>
+            <HourlyForecast hourlyForecast={hourlyForecast} />
         </>
     );
 };
